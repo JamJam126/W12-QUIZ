@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../../models/grocery.dart';
 
 class NewItem extends StatefulWidget {
@@ -43,10 +43,22 @@ class _NewItemState extends State<NewItem> {
 
   void onReset() {
     // Will be implemented later - Reset all fields to the initial values
+    _nameController.text = defautName;
+    _quantityController.text = defaultQuantity.toString();
+    _selectedCategory = defaultCategory;
   }
 
   void onAdd() {
     // Will be implemented later - Create and return the new grocery
+    final quantity = int.tryParse(_quantityController.text) ?? 1;
+    final newGrocery = Grocery(
+      id: 'theBEST', 
+      name: _nameController.text, 
+      quantity: quantity,
+      category: _selectedCategory
+    );
+
+    Navigator.of(context).pop(newGrocery);
   }
 
   @override
@@ -76,7 +88,22 @@ class _NewItemState extends State<NewItem> {
                 Expanded(
                   child: DropdownButtonFormField<GroceryCategory>(
                     value: _selectedCategory,
-                    items: [  ],
+                    items: GroceryCategory.values.map((category) {
+                      return DropdownMenuItem(
+                        value: category,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 15,
+                              height: 15,
+                              color: category.color,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(category.name),
+                          ],
+                        )
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       if (value != null) {
                         setState(() {
